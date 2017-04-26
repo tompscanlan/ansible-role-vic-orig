@@ -1,2 +1,10 @@
+# Copyright © 2017 VMware, Inc. All Rights Reserved.
 ---
-# tasks file for vic
+
+- include: install.yml
+  when: vic_version != "remove"
+
+- include: vic-create.yml
+
+- include: uninstall.yml
+  when: vic_version == "remove"

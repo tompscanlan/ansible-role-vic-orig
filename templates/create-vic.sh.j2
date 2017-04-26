@@ -1,0 +1,115 @@
+#!/bin/bash
+
+getdocker () {
+    env | grep -i docker
+}
+
+setdocker() {
+    host=$1
+
+    if [ -z "$1" ]; then
+        echo "must set host"
+    elif [ "$1" == "local" ]; then
+        unset DOCKER_HOST
+        unset DOCKER_CERT_PATH
+        unset DOCKER_TLS_VERIFY
+        unset COMPOSE_TLS_VERSION
+    else
+        export DOCKER_HOST=tcp://${1}.home.local:2376
+        export DOCKER_CERT_PATH=/Users/tscanlan/projects/vic-validataion/${1}/
+        export DOCKER_TLS_VERIFY=1
+        export COMPOSE_TLS_VERSION=TLSv1_2
+
+    fi
+}
+
+alias dg=getdocker
+alias ds=setdocker
+
+viccreate() {
+    if [ -z "$1" ]; then
+        echo "must set hostname"
+    else
+        vch=$1
+        SECONDS=0
+
+        vic-machine-darwin create \
+            --target https://192.168.1.9/Goddard \
+            --user administrator@home.local \
+            --password 'VMware1!' \
+            --name ${vch} \
+            --tls-cname "${vch}.home.local" \
+            --image-store esx-a-ssd  \
+            --bridge-network bridge-${vch} \
+            --compute-resource BasementLab \
+            --thumbprint "29:03:72:8B:73:ED:D8:B6:D7:36:E8:EE:4F:1D:91:DE:9A:2C:3D:4A"  \
+            --bridge-network-range 172.16.0.0/12  \
+            --management-network Management \
+            --management-network-gateway 0.0.0.0/0:192.168.1.254 \
+            --management-network-ip 192.168.1.19/24  \
+            --dns-server 192.168.1.1  \
+            --public-network VMNet \
+            --organization tscanlan   \
+            --registry-ca harbor-ca.crt   \
+            --volume-store "esx-a-ssd/${vch}-volumes:default"  \
+            --timeout 10m
+
+        vic-machine-darwin debug --enable-ssh --rootpw 'VMware1!' \
+            --target https://192.168.1.9/Goddard \
+            --user administrator@home.local \
+            --password 'VMware1!' \
+            --thumbprint "29:03:72:8B:73:ED:D8:B6:D7:36:E8:EE:4F:1D:91:DE:9A:2C:3D:4A"  \
+            --name ${vch}
+
+
+        setdocker $vch
+
+        echo "Create took $SECONDS seconds"
+
+        SECONDS=0
+        cmd="docker volume create --opt VolumeStore=default --opt Capacity=2GB --name ${vch}test"
+        while ! $cmd; do
+            sleep 1
+        done
+        echo "Initial volume create took $SECONDS seconds"
+
+    fi
+}
+#
+#
+#
+#SECONDS=0
+#docker run  busybox ls
+#echo "Initial busybox run took $SECONDS seconds"
+#
+#
+#docker run --name some-redis -d -v test:/data redis redis-server --appendonly yes
+#docker run -it --link some-redis:redis --rm redis redis-cli -h redis -p 6379
+#
+#
+#export GOVC_INSECURE=1
+#export GOVC_DATACENTER=Goddard
+#export GOVC_PASSWORD=VMware1!
+#export GOVC_URL=https://vcenter.home.local/sdk
+#export GOVC_USERNAME=administrator@home.local
+#export GOVC_DATASTORE=esx-a-ssd
+#export GOVC_RESOURCE_POOL=
+
+
+vicdelete() {
+    if [ -z "$1" ]; then
+        echo "must set hostname"
+    else
+        vch=$1
+
+        SECONDS=0
+        vic-machine-darwin  delete  \
+            --target https://192.168.1.9/Goddard \
+            --user administrator@home.local \
+            --password 'VMware1!' \
+            --thumbprint "29:03:72:8B:73:ED:D8:B6:D7:36:E8:EE:4F:1D:91:DE:9A:2C:3D:4A"  \
+            --name ${vch} \
+            -f
+        echo "Delete took $SECONDS seconds"
+    fi
+}

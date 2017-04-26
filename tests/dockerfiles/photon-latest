@@ -12,6 +12,7 @@ RUN	tdnf makecache && \
 	    sed \
 	    shadow \
 	    systemd \
+	    tar \
 	    yum \
 	    yum-metadata-parser
 
