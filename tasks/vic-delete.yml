@@ -1,0 +1,17 @@
+---
+- name: Check for VCH existance
+  command: "{{ lookup('template', './list.j2', item = item.value) }}"
+  with_items: "{{ vic_controller_hosts }}"
+  register: vic_vch_list
+  changed_when: False
+  run_once: True
+
+- debug: msg="got {{ item }}"
+  with_items: "{{ vic_vch_list.results }}"
+
+# borked for now.  need to parse stdout above for present vch
+# and remove those not in vic list
+#- name: Delete VCHs
+#  command: "{{ lookup('template', './delete.j2', item=item) }}"
+#  when: item.item.name not in item.stdout
+#  with_items: "{{ vic_vch_list.results }}"

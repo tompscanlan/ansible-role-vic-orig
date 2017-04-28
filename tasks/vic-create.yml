@@ -1,6 +1,6 @@
 ---
 - name: Check for VCH existance
-  command: "{{ lookup('template', './list.j2', item=item) }}"
+  shell: "{{ lookup('template', './list.j2', item=item) }}"
   with_items: "{{ vic_controller_hosts }}"
   register: vic_vch_list
   changed_when: False

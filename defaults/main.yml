@@ -11,3 +11,6 @@ vic_download_validate_certs: False
 # {{ ansible_system|lower }}
 
 vic_controller_hosts: []
+
+# if this is set, delete vch that exist but are not in our vic_controller_hosts list
+vic_vch_delete: False
