@@ -60,5 +60,3 @@
         public-network: VMNet
         organization: tscanlan
         volume-store: "esx-a-ssd/test3-volumes:default"
-
-

@@ -2,6 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 
+- name: ensure awk is installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openssl
+    - gawk
+
 - include: install.yml
   when: vic_version != "remove"
 

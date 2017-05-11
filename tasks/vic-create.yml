@@ -7,6 +7,8 @@
   register: vic_vch_list
   changed_when: False
   run_once: True
+  tags:
+    - skip_ansible_lint
 
 - debug: msg={{vic_vch_list.results}}
 

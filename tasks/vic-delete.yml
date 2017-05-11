@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 - name: Check for VCH existance
-  command: "{{ lookup('template', './list.j2', item = item.value) }}"
+  shell: "{{ lookup('template', './list.j2', item = item.value) }}"
   with_items: "{{ vic_controller_hosts }}"
   register: vic_vch_list
   changed_when: False
   run_once: True
+  tags:
+    - skip_ansible_lint
 
 - debug: msg="got {{ item }}"
   with_items: "{{ vic_vch_list.results }}"
