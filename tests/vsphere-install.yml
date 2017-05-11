@@ -1,3 +1,5 @@
+# Copyright © 2017 VMware, Inc. All Rights Reserved.
+# SPDX-License-Identifier: MIT
 ---
 - hosts: all
   roles:
@@ -8,7 +10,7 @@
         timeout: 5m
         target: https://192.168.1.9/Goddard
         user: administrator@home.local
-        password: 'VMware1!'
+        password: 'some_password'
         tls-cname: test1.home.local
         image-store: esx-a-ssd
         bridge-network: bridge-vic1
@@ -26,7 +28,7 @@
         timeout: 5m
         target: https://192.168.1.9/Goddard
         user: administrator@home.local
-        password: 'VMware1!'
+        password: 'some_password'
         tls-cname: test2.home.local
         image-store: esx-a-ssd
         bridge-network: bridge-vic2
@@ -44,7 +46,7 @@
         timeout: 5m
         target: https://192.168.1.9/Goddard
         user: administrator@home.local
-        password: 'VMware1!'
+        password: 'some_password'
         tls-cname: test3.home.local
         image-store: esx-a-ssd
         bridge-network: bridge-vic3
